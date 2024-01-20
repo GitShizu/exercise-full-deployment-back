@@ -6,7 +6,11 @@ const albumSchema = new Schema({
         ref: 'Musician'
     },
     duration_seconds: Number,
-    title: String
+    title: String,
+    cover: {
+        type: String,
+        default: 'https://source.unsplash.com/random/100×100/?'     
+    }
 })
 
 const Album = model('Album', albumSchema);
