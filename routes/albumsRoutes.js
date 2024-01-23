@@ -15,10 +15,10 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const { _id } = await Album.create(req.body)
-        const album = await Album.findById(_id).populate('musician', 'stageName -_id')
+        const newAlbum = new Album(req.body)
+        await newAlbum.save()
+        const album = await Album.findById(newAlbum._id.toString()).populate('musician', 'stageName -_id')
         res.send(album)
-
     } catch (e) {
         res.status(400).send(e)
     }
@@ -51,15 +51,10 @@ router.patch('/:id', async (req, res) => {
 
     try {
         const album = await Album.findById(req.params.id)
-        Object.keys(req.body).forEach(k => {
-            album[k] = req.body[k]
+        Object.entries(req.body).forEach(([key, value])=>{
+            album[key] = value
         })
         await album.save();
-        // const album = await Album.findByIdAndUpdate(req.params.id, req.body, {
-        //     runValidators: true,
-        //     new: true,
-        //     context: 'query' //apply custom validators
-        // }).populate('musician', 'stageName -_id')
         res.send(album)
     } catch (e) {
         res.status(400).send(e.message)
