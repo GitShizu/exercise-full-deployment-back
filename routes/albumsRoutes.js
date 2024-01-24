@@ -16,6 +16,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const newAlbum = new Album(req.body)
+        await newAlbum.generateSlug()
         await newAlbum.save()
         const album = await Album.findById(newAlbum._id.toString()).populate('musician', 'stageName -_id')
         res.send(album)
