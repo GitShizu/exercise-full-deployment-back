@@ -20,7 +20,7 @@ const albumSchema = new Schema({
     slug: {
         type: String,
         trim: true,
-        immutable: true
+        // immutable: true
     }
 })
 
@@ -83,6 +83,8 @@ albumSchema.pre('remove', async function (next) {
     }
     next()
 })
+
+
 
 const Album = model('Album', albumSchema);
 

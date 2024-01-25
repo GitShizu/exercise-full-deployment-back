@@ -25,9 +25,9 @@ router.post('/', async (req, res) => {
     }
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/:slug', async (req, res) => {
     try {
-        const album = await Album.findById(req.params.id).populate('musician', 'stageName -_id')
+        const album = await Album.findOne({slug: req.params.slug}).populate('musician', 'stageName -_id')
         res.send(album);
     } catch (e) {
         res.status(404).send(e.message)
@@ -36,25 +36,31 @@ router.get('/:id', async (req, res) => {
 
 
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:slug', async (req, res) => {
     try {
-        await Album.findByIdAndDelete(req.params.id)
+        await Album.findOneAndDelete({slug: req.params.slug})
         res.send('Album deleted successfully')
     } catch (e) {
         res.status(404).send(e.message)
     }
 })
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:slug', async (req, res) => {
     if (!req.body || !Object.keys(req.body).length) {
         res.status(400).send('You must enter a body with at least one property')
     }
-
     try {
-        const album = await Album.findById(req.params.id)
+        const album = await Album.findOne({slug: req.params.slug})
+        const titleUpdated = album.title !== req.body.title;
         Object.entries(req.body).forEach(([key, value])=>{
-            album[key] = value
+            if(key!== 'slug'){
+                album[key] = value
+            }
         })
+        if(titleUpdated){
+            await album.generateSlug()      
+            console.log('Slug updated');
+        }
         await album.save();
         res.send(album)
     } catch (e) {
