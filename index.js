@@ -25,3 +25,4 @@ mongoose.connect(MONGO_URI)
     })
 }).catch(err=>console.error(err))
 
+export default app
