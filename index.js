@@ -6,7 +6,7 @@ import dotenv from 'dotenv'; dotenv.config();
 import musicianRoutes from './routes/musiciansRoutes.js';
 import albumRoutes from './routes/albumsRoutes.js';
 const {MONGO_URI} = process.env;
-
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 
@@ -20,7 +20,7 @@ app.use('/albums', albumRoutes);
 mongoose.connect(MONGO_URI)
 .then(()=>{
     console.log('Mongo connected succesfully');
-    app.listen(3000, ()=>{
+    app.listen(PORT, ()=>{
         console.log('Server running - listening on port 3000');
     })
 }).catch(err=>console.error(err))
