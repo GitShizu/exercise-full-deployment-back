@@ -28,6 +28,9 @@ router.post('/', async (req, res) => {
 router.get('/:slug', async (req, res) => {
     try {
         const musician = await Musician.findOne({ slug: req.params.slug }).populate('albums', 'title -_id')
+        if (musician === null) {
+            throw new Error('Not found')
+        }
         res.send(musician);
     } catch (e) {
         res.status(404).send(e.message)
@@ -55,7 +58,7 @@ router.patch('/:slug', async (req, res) => {
                 musician[key] = value
             }
         })
-        if(stageNameUpdated){
+        if (stageNameUpdated) {
             await musician.generateSlug();
             console.log('Slug updated')
         }

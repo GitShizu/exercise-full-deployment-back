@@ -28,6 +28,9 @@ router.post('/', async (req, res) => {
 router.get('/:slug', async (req, res) => {
     try {
         const album = await Album.findOne({slug: req.params.slug}).populate('musician', 'stageName -_id')
+        if (album === null) {
+            throw new Error('Not found')
+        }
         res.send(album);
     } catch (e) {
         res.status(404).send(e.message)
