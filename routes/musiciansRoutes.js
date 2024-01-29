@@ -1,4 +1,4 @@
-import express, { query } from 'express';
+import express from 'express';
 import Musician from '../models/Musician.js';
 
 const router = express.Router();

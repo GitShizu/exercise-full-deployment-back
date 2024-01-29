@@ -25,7 +25,7 @@ const musicianSchema = new Schema({
     birthDate: Date,
     img: {
         type: String,
-        default: 'https://source.unsplash.com/random/50×50/?headshot'
+        default: 'https://source.unsplash.com/random/50x50/?headshot'
     },
     slug: {
         type: String,

@@ -15,7 +15,7 @@ const albumSchema = new Schema({
     },
     cover: {
         type: String,
-        default: 'https://source.unsplash.com/random/100×100/?'
+        default: 'https://source.unsplash.com/random/100x100/?'
     },
     slug: {
         type: String,
