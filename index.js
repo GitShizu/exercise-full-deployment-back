@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import dotenv from 'dotenv'; dotenv.config();
 import musicianRoutes from './routes/musiciansRoutes.js';
 import albumRoutes from './routes/albumsRoutes.js';
+import userRoutes from './routes/userRoutes.js'
 const {MONGO_URI} = process.env;
 const PORT = process.env.PORT || 3000;
 
@@ -16,6 +17,7 @@ app.use(express.json());
 
 app.use('/musicians', musicianRoutes );
 app.use('/albums', albumRoutes);
+app.use('/', userRoutes)
 
 mongoose.connect(MONGO_URI)
 .then(()=>{
