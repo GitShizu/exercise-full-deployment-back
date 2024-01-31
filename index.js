@@ -5,7 +5,8 @@ import mongoose from "mongoose";
 import dotenv from 'dotenv'; dotenv.config();
 import musicianRoutes from './routes/musiciansRoutes.js';
 import albumRoutes from './routes/albumsRoutes.js';
-import userRoutes from './routes/userRoutes.js'
+import authRoutes from './routes/authRoutes.js'
+import {requireAuth} from './lib/authHelper.js'
 const {MONGO_URI} = process.env;
 const PORT = process.env.PORT || 3000;
 
@@ -15,9 +16,11 @@ app.use(morgan('dev'));
 app.use(cors({origin:'*'}));
 app.use(express.json());
 
+app.use('/auth', authRoutes)
+app.use(requireAuth);
 app.use('/musicians', musicianRoutes );
 app.use('/albums', albumRoutes);
-app.use('/', userRoutes)
+
 
 mongoose.connect(MONGO_URI)
 .then(()=>{
