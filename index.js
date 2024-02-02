@@ -17,7 +17,7 @@ app.use(cors({origin:'*'}));
 app.use(express.json());
 
 app.use('/auth', authRoutes)
-app.use(requireAuth);
+app.use(requireAuth());                          // ()? 
 app.use('/musicians', musicianRoutes );
 app.use('/albums', albumRoutes);
 
