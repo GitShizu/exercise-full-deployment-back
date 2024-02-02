@@ -1,4 +1,4 @@
-import  express, { Router }  from "express";
+import  express from "express";
 import User from "../models/User.js";
 import { generateToken } from "../lib/authHelper.js";
 
@@ -7,6 +7,7 @@ router.use(express.json());
 
 router.post('/signup', async (req,res)=>{
     const {email,password} = req.body;
+    console.log(req.body);
     if(!email || !password){
         return res.status(400).send('All fields must be filled')
     }

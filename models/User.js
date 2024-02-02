@@ -1,4 +1,4 @@
-import { SchemaTypes, model, Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 import validator from "validator";
 import { hashPassword, comparePsw } from '../lib/authHelper.js'
 const { isEmail, isStrongPassword } = validator
