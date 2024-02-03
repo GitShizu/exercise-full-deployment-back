@@ -17,9 +17,9 @@ router.post('/', async (req, res) => {
     try {
         const musician = new Musician(req.body)
         await musician.generateSlug();
+        await musician.albumsCounter();
         await musician.save()
-        const responseMusician = await Musician.findById(musician._id.toString()).populate('albums', 'title -_id')
-        res.send(responseMusician)
+        res.send(musician)
     } catch (e) {
         res.status(400).send(e)
     }

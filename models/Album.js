@@ -4,7 +4,8 @@ import Musician from "./Musician.js";
 const albumSchema = new Schema({
     musician: {
         type: SchemaTypes.ObjectId,
-        ref: 'Musician'
+        ref: 'Musician',
+        default: null
     },
     duration_seconds: Number,
     title: {

@@ -1,4 +1,5 @@
 import { SchemaTypes, model, Schema } from "mongoose";
+import Album from "./Album.js";
 
 const musicianSchema = new Schema({
     albums: [{
@@ -6,6 +7,9 @@ const musicianSchema = new Schema({
         ref: 'Album',
         default: []
     }],
+    albumsCount:{
+        type: Number,
+    },
     firstName: {
         type: String,
         minLength: 2,
@@ -47,6 +51,11 @@ musicianSchema.methods.generateSlug = async function () {
         }
     }
     this.slug = slug
+}
+
+musicianSchema.methods.albumsCounter = async function () {
+    const albumsCount = await Album.countDocuments({musician: this._id})
+    this.albumsCount = albumsCount
 }
 
 musicianSchema.methods.removeAlbum = async function(albumId){
