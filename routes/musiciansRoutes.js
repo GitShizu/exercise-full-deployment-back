@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
         const musicians = await Musician.find().populate('albums', 'title -_id');
         res.send(musicians)
     } catch (e) {
-        res.status(500).send(e.message)
+        res.status(500).send(e)
     }
 })
 
@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
         const responseMusician = await Musician.findById(musician._id.toString()).populate('albums', 'title -_id')
         res.send(responseMusician)
     } catch (e) {
-        res.status(400).send(e.message)
+        res.status(400).send(e)
     }
 })
 
