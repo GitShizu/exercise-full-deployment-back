@@ -18,8 +18,8 @@ router.post('/', async (req, res) => {
         const newAlbum = new Album(req.body)
         await newAlbum.generateSlug()
         await newAlbum.save()
-        const album = await Album.findById(newAlbum._id.toString()).populate('musician', 'stageName -_id')
-        res.send(album)
+        const albums = await Album.find()
+        res.send(albums)
     } catch (e) {
         res.status(400).send(e)
     }
@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
 
 router.get('/:slug', async (req, res) => {
     try {
-        const album = await Album.findOne({slug: req.params.slug}).populate('musician', 'stageName -_id')
+        const album = await Album.findOne({slug: req.params.slug}).populate('musician', 'slug stageName -_id')
         if (album === null) {
             throw new Error('Not found')
         }
@@ -42,7 +42,8 @@ router.get('/:slug', async (req, res) => {
 router.delete('/:slug', async (req, res) => {
     try {
         await Album.findOneAndDelete({slug: req.params.slug})
-        res.send('Album deleted successfully')
+        const albums = await Album.find()
+        res.send(albums)
     } catch (e) {
         res.status(404).send(e.message)
     }
@@ -65,6 +66,7 @@ router.patch('/:slug', async (req, res) => {
             console.log('Slug updated');
         }
         await album.save();
+        const albumToSend = await Album.findOne({slug: req.params.slug}).populate('musician', 'slug stageName -_id')
         res.send(album)
     } catch (e) {
         res.status(400).send(e.message)

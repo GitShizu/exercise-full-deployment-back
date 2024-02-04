@@ -1,13 +1,18 @@
 import express from 'express';
 import Musician from '../models/Musician.js';
+import Album from '../models/Album.js'
 
 const router = express.Router();
 router.use(express.json());
 
 router.get('/', async (req, res) => {
     try {
-        const musicians = await Musician.find().populate('albums', 'title -_id');
-        res.send(musicians)
+        const musicians = await Musician.find().select('-albums')
+        const musiciansWithCount = await Promise.all(musicians.map(async (m) => {
+           await m.albumsCounter()
+            return m
+        }))
+        res.send(musiciansWithCount)
     } catch (e) {
         res.status(500).send(e)
     }
@@ -18,8 +23,10 @@ router.post('/', async (req, res) => {
         const musician = new Musician(req.body)
         await musician.generateSlug();
         await musician.albumsCounter();
+        musician.albums = [];
         await musician.save()
-        res.send(musician)
+        const musicians = await Musician.find()
+        res.send(musicians)
     } catch (e) {
         res.status(400).send(e)
     }
@@ -31,6 +38,7 @@ router.get('/:slug', async (req, res) => {
         if (musician === null) {
             throw new Error('Not found')
         }
+        musician.albums = await Album.find({musician: musician._id})
         res.send(musician);
     } catch (e) {
         res.status(404).send(e.message)
@@ -40,7 +48,8 @@ router.get('/:slug', async (req, res) => {
 router.delete('/:slug', async (req, res) => {
     try {
         await Musician.findOneAndDelete({ slug: req.params.slug })
-        res.send('musician deleted successfully')
+        const musicians = await Musician.find()
+        res.send(musicians)
     } catch (e) {
         res.status(404).send(e.message)
     }
@@ -54,7 +63,7 @@ router.patch('/:slug', async (req, res) => {
         const musician = await Musician.findOne({ slug: req.params.slug })
         const stageNameUpdated = musician.stageName !== req.body.stageName;
         Object.entries(req.body).forEach(([key, value]) => {
-            if (key !== 'slug') {
+            if (key !== 'slug' && key !== 'albums') {
                 musician[key] = value
             }
         })
@@ -62,8 +71,11 @@ router.patch('/:slug', async (req, res) => {
             await musician.generateSlug();
             console.log('Slug updated')
         }
+        musician.albums = [];
         await musician.save();
-        res.send(musician)
+        musician.albums = await Album.find({musician: musician._id})
+        const musicianToSend = await Musician.findOne({ slug: req.params.slug }).populate('albums', 'title -_id')
+        res.send(musicianToSend)
     } catch (e) {
         res.status(400).send(e.message)
     }

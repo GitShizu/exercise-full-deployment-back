@@ -2,11 +2,9 @@ import { SchemaTypes, model, Schema } from "mongoose";
 import Album from "./Album.js";
 
 const musicianSchema = new Schema({
-    albums: [{
-        type: SchemaTypes.ObjectId,
-        ref: 'Album',
-        default: []
-    }],
+    albums: {
+        type: Array,
+    },
     albumsCount:{
         type: Number,
     },
